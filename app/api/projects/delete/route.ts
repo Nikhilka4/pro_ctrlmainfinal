@@ -8,27 +8,34 @@ export async function DELETE(request: Request) {
     await connectDB();
     const { searchParams } = new URL(request.url);
     const username = searchParams.get("username");
-    const title = searchParams.get("title");
+    const projectTitle = searchParams.get("title");
 
-    if (!username || !title) {
+    if (!username || !projectTitle) {
       return NextResponse.json(
         { error: "Username and project title are required" },
         { status: 400 }
       );
     }
 
-    const project = await Project.findOneAndDelete({ username, title });
-    if (!project) {
+    const deletedProject = await Project.findOneAndDelete({
+      username,
+      projectTitle,
+    });
+
+    if (!deletedProject) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
     // Remove project reference from user
     await User.findOneAndUpdate(
       { username },
-      { $pull: { projects: project._id } }
+      { $pull: { projects: deletedProject._id } }
     );
 
-    return NextResponse.json({ message: "Project deleted successfully" });
+    return NextResponse.json({
+      message: "Project deleted successfully",
+      deletedProject,
+    });
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "Internal server error" },

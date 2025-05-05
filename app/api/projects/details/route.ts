@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const project = await Project.findOne({ username, title });
+    const project = await Project.findOne({ username, projectTitle: title });
     if (!project) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }

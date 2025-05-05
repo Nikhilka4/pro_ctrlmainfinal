@@ -36,7 +36,6 @@ const projectSchema = new mongoose.Schema(
     },
     estimatedEndDate: {
       type: Date,
-      required: true,
     },
     quarter: {
       type: String,
@@ -68,16 +67,6 @@ const projectSchema = new mongoose.Schema(
       ],
       required: true,
     },
-    documents: [
-      {
-        filename: String,
-        path: String,
-        uploadDate: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
     paymentStatus: {
       type: String,
       enum: ["Active", "Non Active"],

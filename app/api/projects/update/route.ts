@@ -5,9 +5,9 @@ import Project from "@/models/Project";
 export async function PUT(request: Request) {
   try {
     await connectDB();
-    const { username, title, ...updateData } = await request.json();
+    const { username, projectTitle, ...updateData } = await request.json();
 
-    if (!username || !title) {
+    if (!username || !projectTitle) {
       return NextResponse.json(
         { error: "Username and project title are required" },
         { status: 400 }
@@ -15,7 +15,7 @@ export async function PUT(request: Request) {
     }
 
     const project = await Project.findOneAndUpdate(
-      { username, title },
+      { username, projectTitle },
       { ...updateData, updatedAt: new Date() },
       { new: true, runValidators: true }
     );

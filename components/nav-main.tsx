@@ -177,7 +177,7 @@ export function NavMain() {
                         : ""
                     }
                   >
-                    <Link href="/tools/gst-calculator">
+                    <Link href="/tools/price-comparison">
                       <span>Price Comparison</span>
                     </Link>
                   </SidebarMenuSubButton>
