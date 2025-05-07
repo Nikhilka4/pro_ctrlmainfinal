@@ -72,7 +72,7 @@ export default function FileUpload({
     setUploading(false);
   };
 
-  const fetchUploadedFiles = async () => {
+  const fetchUploadedFiles = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/files?username=${username}&projectTitle=${projectTitle}`
@@ -82,7 +82,11 @@ export default function FileUpload({
     } catch (error) {
       console.error("Failed to fetch files:", error);
     }
-  };
+  }, [username, projectTitle]);
+
+  useEffect(() => {
+    fetchUploadedFiles();
+  }, [fetchUploadedFiles]);
 
   const deleteFile = async (fileId: string) => {
     try {
@@ -104,10 +108,6 @@ export default function FileUpload({
     }
   };
 
-  useEffect(() => {
-    fetchUploadedFiles();
-  }, [username, projectTitle]);
-
   const downloadFile = async (fileId: string, filename: string) => {
     try {
       const response = await fetch(
@@ -128,18 +128,22 @@ export default function FileUpload({
   const { data: session } = useSession();
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      {session?.user?.role === "admin" && (<div
-        {...getRootProps()}
-        className={`border-2 border-dashed p-8 mb-6 rounded-lg text-center cursor-pointer
+    <div className="w-[95%] mx-auto p-6">
+      <h2 className="text-2xl font-bold mb-6">{projectTitle}</h2>
+
+      {session?.user?.role === "admin" && (
+        <div
+          {...getRootProps()}
+          className={`border-2 border-dashed p-8 mb-6 rounded-lg text-center cursor-pointer
           ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
-      >
-        <input {...getInputProps()} />
-        <p>Drag & drop PDF files here, or click to select files</p>
-      </div>)}
+        >
+          <input {...getInputProps()} />
+          <p>Drag & drop PDF files here, or click to select files</p>
+        </div>
+      )}
 
       {files.length > 0 && (
-        <div className="mb-6">
+        <div className="w-full mb-6">
           <h3 className="text-lg font-semibold mb-2">Selected Files:</h3>
           <ul className="space-y-2">
             {files.map((file, index) => (
@@ -173,7 +177,7 @@ export default function FileUpload({
               className="flex items-center justify-between bg-gray-50 p-3 rounded"
             >
               <span>{file.filename}</span>
-              <div className="flex gap-4">
+              <div className="flex items-center justify-center gap-4">
                 <span className="text-sm text-gray-500">
                   {(file.size / 1024 / 1024).toFixed(2)} MB
                 </span>
@@ -185,14 +189,16 @@ export default function FileUpload({
                 >
                   <Download className="w-4 h-4 inline-block mr-1" />
                 </Button>
-                {session?.user?.role === "admin" && (<Button
-                  variant="ghost"
-                  size={"icon"}
-                  onClick={() => deleteFile(file._id)}
-                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="w-4 h-4 inline-block mr-1" />
-                </Button>)}
+                {session?.user?.role === "admin" && (
+                  <Button
+                    variant="ghost"
+                    size={"icon"}
+                    onClick={() => deleteFile(file._id)}
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="w-4 h-4 inline-block mr-1" />
+                  </Button>
+                )}
               </div>
             </div>
           ))}

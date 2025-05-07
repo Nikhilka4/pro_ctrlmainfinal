@@ -1,18 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
+    const id = request.url.split("/").pop()?.split("?")[0] ?? "";
     const url = new URL(request.url);
     const username = url.searchParams.get("username");
     const projectTitle = url.searchParams.get("projectTitle");
 
     if (!username || !projectTitle) {
-      return NextResponse.json(
+      return Response.json(
         { error: "Username and projectTitle are required" },
         { status: 400 }
       );
@@ -23,29 +21,23 @@ export async function GET(
     const filesCollection = db.collection("files");
 
     const file = await filesCollection.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
       username,
       projectTitle,
     });
 
     if (!file) {
-      return NextResponse.json({ error: "File not found" }, { status: 404 });
+      return Response.json({ error: "File not found" }, { status: 404 });
     }
 
-    // Create response with the file content
-    const response = new NextResponse(file.content.buffer, {
+    return new Response(file.content.buffer, {
       headers: {
         "Content-Type": file.contentType,
         "Content-Disposition": `attachment; filename="${file.filename}"`,
       },
     });
-
-    return response;
   } catch (error) {
     console.error("Download error:", error);
-    return NextResponse.json(
-      { error: "Error downloading file" },
-      { status: 500 }
-    );
+    return Response.json({ error: "Error downloading file" }, { status: 500 });
   }
 }

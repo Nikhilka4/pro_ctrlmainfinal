@@ -133,14 +133,14 @@ export function ProjectTable({
           <TableHeader>
             <TableRow>
               <TableHead>S.No</TableHead>
-              <TableHead className="w-[200px]">Project Title</TableHead>
+              <TableHead className="w-[200px] text-center">Project Title</TableHead>
               <TableHead>Status Badge</TableHead>
               <TableHead>Start Date</TableHead>
               <TableHead>End date</TableHead>
               <TableHead>Quarter</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead className="text-center">Type</TableHead>
               <TableHead>Contact Number</TableHead>
-              <TableHead>Address</TableHead>
+              <TableHead className="text-center">Address</TableHead>
               <TableHead>Progress bar with percentage</TableHead>
             </TableRow>
           </TableHeader>
@@ -150,8 +150,8 @@ export function ProjectTable({
                 <TableCell className="font-medium">
                   {startIndex + index + 1}
                 </TableCell>
-                <TableCell>{project.projectTitle}</TableCell>
-                <TableCell>{project.projectStatus}</TableCell>
+                <TableCell className="text-center">{project.projectTitle}</TableCell>
+                <TableCell className="text-center">{project.projectStatus}</TableCell>
                 <TableCell>
                   {new Date(project.startDate).toLocaleDateString()}
                 </TableCell>
@@ -160,9 +160,9 @@ export function ProjectTable({
                     ? new Date(project.estimatedEndDate).toLocaleDateString()
                     : "Not set"}
                 </TableCell>
-                <TableCell>{project.quarter}</TableCell>
+                <TableCell className="text-center">{project.quarter}</TableCell>
                 <TableCell>{project.type}</TableCell>
-                <TableCell>{project.phoneNumber}</TableCell>
+                <TableCell className="text-center">{project.phoneNumber}</TableCell>
                 <TableCell>{project.address}</TableCell>
                 <TableCell>
                   <Progress value={calculateProgress(project.projectStatus)} />

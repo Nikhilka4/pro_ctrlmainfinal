@@ -20,6 +20,34 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+// Format number to Indian notation (regular format with commas)
+const formatIndianNumber = (num: number): string => {
+  const internationalNum = num.toString();
+  let lastThree = internationalNum.substring(internationalNum.length - 3);
+  const otherNumbers = internationalNum.substring(0, internationalNum.length - 3);
+  if (otherNumbers !== "") {
+    lastThree = "," + lastThree;
+  }
+  return "₹" + otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+};
+
+// Format number to abbreviated Indian notation (for pie chart center)
+const formatAbbreviatedAmount = (num: number): string => {
+  const crore = 10000000;
+  const million = 1000000;
+  const lakh = 100000;
+
+  if (num >= crore) {
+    return `₹${(num / crore).toFixed(2)}Cr`;
+  } else if (num >= million) {
+    return `₹${(num / million).toFixed(2)}Mn`;
+  } else if (num >= lakh) {
+    return `₹${(num / lakh).toFixed(2)}L`;
+  } else {
+    return formatIndianNumber(num);
+  }
+};
+
 interface Project {
   budget: number;
   paid: number;
@@ -151,14 +179,14 @@ export function Component({
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className="fill-foreground text-2xl font-bold"
                         >
-                          ₹{totalBudget.toLocaleString()}
+                          {formatAbbreviatedAmount(totalBudget)}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          className="fill-muted-foreground text-sm"
                         >
                           Total
                         </tspan>
@@ -176,19 +204,19 @@ export function Component({
           <div className="grid grid-cols-2 w-full">
             <h1 className="font-medium text-left">Total Amount:</h1>
             <h1 className="font-medium text-right">
-              ₹{totalBudget.toLocaleString()}
+              {formatIndianNumber(totalBudget)}
             </h1>
           </div>
           <div className="grid grid-cols-2 w-full">
             <h1 className="font-medium text-left">Paid Amount:</h1>
             <h1 className="font-medium text-right">
-              ₹{totalPaid.toLocaleString()}
+              {formatIndianNumber(totalPaid)}
             </h1>
           </div>
           <div className="grid grid-cols-2 w-full">
             <h1 className="font-medium text-left">Balance Amount:</h1>
             <h1 className="font-medium text-right">
-              ₹{balance.toLocaleString()}
+              {formatIndianNumber(balance)}
             </h1>
           </div>
         </div>

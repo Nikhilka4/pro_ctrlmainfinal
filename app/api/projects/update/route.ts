@@ -25,9 +25,11 @@ export async function PUT(request: Request) {
     }
 
     return NextResponse.json(project);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      {
+        error: error instanceof Error ? error.message : "Internal server error",
+      },
       { status: 500 }
     );
   }

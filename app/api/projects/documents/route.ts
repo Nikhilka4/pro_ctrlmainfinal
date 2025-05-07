@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { connectDB } from "@/lib/db";
-import Project from "@/models/Project";
+// import Project from "@/models/Project";
 import Documentation from "@/models/Documentation";
 import { PDFDocument } from "pdf-lib";
-import { createHash } from "crypto";
+import { File } from "buffer";
 
 // Constants
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -35,36 +35,31 @@ function validateFile(file: File) {
   }
 }
 
-export async function POST(request: Request) {
+// interface UploadedFile extends File {
+//   name: string;
+//   type: string;
+//   size: number;
+//   arrayBuffer(): Promise<ArrayBuffer>;
+// }
+
+export async function POST(request: NextRequest) {
   try {
     await connectDB();
-
     const formData = await request.formData();
     const username = formData.get("username") as string;
-    const projectTitle = formData.get("projectTitle") as string;
+    const title = formData.get("title") as string;
     const files = formData.getAll("documents");
 
-    // Validate request data
-    if (!username || !projectTitle) {
-      return NextResponse.json(
-        { error: "Username and project title are required" },
+    if (!username || !title || files.length === 0) {
+      return Response.json(
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    if (!files || files.length === 0) {
-      return NextResponse.json({ error: "No files uploaded" }, { status: 400 });
-    }
-
-    // Verify project exists
-    const project = await Project.findOne({ username, projectTitle });
-    if (!project) {
-      return NextResponse.json({ error: "Project not found" }, { status: 404 });
-    }
-
     // Process files with validation and compression
     const processedFiles = await Promise.all(
-      files.map(async (file: any) => {
+      files.map(async (file) => {
         if (!(file instanceof File)) {
           throw new Error("Invalid file upload");
         }
@@ -76,68 +71,66 @@ export async function POST(request: Request) {
         const buffer = Buffer.from(await file.arrayBuffer());
         const compressedBuffer = await compressPDF(buffer);
 
-        // Create new documentation entry
-        const doc = await Documentation.create({
-          username,
-          projectTitle,
+        return {
           filename: file.name,
           data: compressedBuffer.toString("base64"),
-          contentType: file.type,
           size: compressedBuffer.length,
-        });
-
-        return doc;
+          contentType: file.type,
+          uploadDate: new Date(),
+          username,
+          projectTitle: title,
+        };
       })
     );
 
-    // Return success response
-    return NextResponse.json({
-      message: "Documents uploaded successfully",
-      documentsCount: processedFiles.length,
-      totalSize: processedFiles.reduce((acc, file) => acc + file.size, 0),
+    // Save all files to database
+    const savedDocs = await Documentation.insertMany(processedFiles);
+
+    return Response.json({
+      message: "Files uploaded successfully",
+      files: savedDocs.map((doc) => ({
+        _id: doc._id,
+        filename: doc.filename,
+        size: doc.size,
+        uploadDate: doc.uploadDate,
+      })),
     });
-  } catch (error: any) {
-    console.error("Error uploading documents:", error);
-
-    // Return appropriate error response
-    const status =
-      error.message.includes("File size") || error.message.includes("Only PDF")
-        ? 400
-        : 500;
-
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status }
-    );
+  } catch (error) {
+    console.error("Error uploading files:", error);
+    return Response.json({ error: "Error uploading files" }, { status: 500 });
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     await connectDB();
-
-    // Get username and projectTitle from URL params
-    const { searchParams } = new URL(request.url);
-    const username = searchParams.get("username");
-    const projectTitle = searchParams.get("projectTitle");
+    const url = new URL(request.url);
+    const username = url.searchParams.get("username");
+    const projectTitle = url.searchParams.get("projectTitle");
 
     if (!username || !projectTitle) {
-      return NextResponse.json(
-        { error: "Username and project title are required" },
+      return Response.json(
+        { error: "Username and projectTitle are required" },
         { status: 400 }
       );
     }
 
-    // Fetch documents for the project
-    const documents = await Documentation.find(
-      { username, projectTitle },
-      { data: 0 } // Exclude the binary data from the response
-    ).sort({ createdAt: -1 });
+    const docs = await Documentation.find({
+      username,
+      projectTitle,
+    }).sort({ uploadDate: -1 });
 
-    return NextResponse.json(documents);
+    return Response.json(
+      docs.map((doc) => ({
+        _id: doc._id,
+        filename: doc.filename,
+        size: doc.size,
+        uploadDate: doc.uploadDate,
+      }))
+    );
   } catch (error) {
     console.error("Error fetching documents:", error);
-    return NextResponse.json(
+    return Response.json(
       { error: "Error fetching documents" },
       { status: 500 }
     );

@@ -117,7 +117,7 @@ export default function LoginPage() {
       setPassword("");
       setCompanyName("");
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error(error instanceof Error ? error.message : "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }

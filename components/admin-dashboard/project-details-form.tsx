@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { FileText, X } from "lucide-react";
 
 interface FormData {
   projectTitle: string;
@@ -98,44 +97,6 @@ export function ProjectDetailsForm({
     value: FormData[keyof FormData]
   ) => {
     setFormData((prev: FormData) => ({ ...prev, [field]: value }));
-  };
-
-  const validateFiles = (fileList: FileList): File[] => {
-    const validFiles: File[] = [];
-    const maxSize = 10 * 1024 * 1024; // 10MB
-
-    Array.from(fileList).forEach((file) => {
-      if (file.type !== "application/pdf") {
-        toast.error(`${file.name} is not a PDF file`);
-        return;
-      }
-      if (file.size > maxSize) {
-        toast.error(`${file.name} exceeds 10MB size limit`);
-        return;
-      }
-      validFiles.push(file);
-    });
-
-    return validFiles;
-  };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUploadError(null);
-    if (e.target.files && e.target.files.length > 0) {
-      const validFiles = validateFiles(e.target.files);
-      setFiles(validFiles);
-
-      if (validFiles.length === 0) {
-        setUploadError("No valid files selected");
-      }
-    }
-  };
-
-  const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-    if (uploadError && files.length <= 1) {
-      setUploadError(null);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -341,7 +302,6 @@ export function ProjectDetailsForm({
           </SelectContent>
         </Select>
       </div>
-
 
       <div className="space-y-2">
         <Label htmlFor="paymentStatus">Payment Status</Label>

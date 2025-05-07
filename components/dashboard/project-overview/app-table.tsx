@@ -97,9 +97,9 @@ export function TableDemo() {
         <TableHeader>
           <TableRow>
             <TableHead>S.No</TableHead>
-            <TableHead className="w-[200px]">Project Title</TableHead>
-            <TableHead>Project Status</TableHead>
-            <TableHead>Last Updated Date</TableHead>
+            <TableHead className="w-[200px] text-center">Project Title</TableHead>
+            <TableHead className="text-center">Project Status</TableHead>
+            <TableHead className="text-center">Last Updated Date</TableHead>
             <TableHead>Progress bar with percentage</TableHead>
           </TableRow>
         </TableHeader>
@@ -111,9 +111,9 @@ export function TableDemo() {
                   ? (currentPage - 1) * itemsPerPage + index + 1
                   : index + 1}
               </TableCell>
-              <TableCell>{project.projectTitle}</TableCell>
-              <TableCell>{project.projectStatus}</TableCell>
-              <TableCell>
+              <TableCell className="text-center">{project.projectTitle}</TableCell>
+              <TableCell className="text-center">{project.projectStatus}</TableCell>
+              <TableCell className="text-center">
                 {new Date(project.updatedAt).toLocaleDateString()}
               </TableCell>
               <TableCell>

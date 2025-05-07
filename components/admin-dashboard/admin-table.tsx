@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import { Button } from "../ui/button";
 import { Pencil, Trash2, PlusCircle } from "lucide-react";
 import {
@@ -40,7 +40,7 @@ import { useState, useEffect } from "react";
 import { ProjectDetailsForm } from "./project-details-form";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 interface Client {
   username: string;
@@ -51,7 +51,7 @@ interface Project {
   _id: string;
   projectTitle: string;
   username: string;
-  documents: any[];
+  documents: Document[]; // Replace any[] with proper type
   projectStatus: string;
   highPriority: boolean;
   startDate: string;
@@ -64,6 +64,13 @@ interface Project {
   paymentStatus: string;
   budget: number;
   paid: number;
+}
+
+interface Document {
+  _id: string;
+  filename: string;
+  size: number;
+  uploadDate: string;
 }
 
 interface FormData {
@@ -83,7 +90,7 @@ interface FormData {
 }
 
 export function AdminTable() {
-  const router = useRouter();
+  // const router = useRouter();
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -131,7 +138,7 @@ export function AdminTable() {
     }
   }, [selectedClient]);
 
-  const handleCreateProject = async (data: any) => {
+  const handleCreateProject = async (data: FormData) => {
     try {
       const response = await fetch("/api/projects/new", {
         method: "POST",
@@ -154,7 +161,7 @@ export function AdminTable() {
     }
   };
 
-  const handleUpdateProject = async (data: any) => {
+  const handleUpdateProject = async (data: FormData) => {
     try {
       const response = await fetch("/api/projects/update", {
         method: "PUT",

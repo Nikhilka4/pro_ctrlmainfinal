@@ -11,6 +11,11 @@ interface FinancialSummary {
   totalBalance: number;
 }
 
+interface Project {
+  budget: number;
+  paid: number;
+}
+
 export function FinanceOverview() {
   const [summary, setSummary] = useState<FinancialSummary>({
     totalBudget: 0,
@@ -30,11 +35,11 @@ export function FinanceOverview() {
           if (response.ok) {
             const projects = await response.json();
             const totalBudget = projects.reduce(
-              (acc: number, project: any) => acc + (project.budget || 0),
+              (acc: number, project: Project) => acc + (project.budget || 0),
               0
             );
             const totalPaid = projects.reduce(
-              (acc: number, project: any) => acc + (project.paid || 0),
+              (acc: number, project: Project) => acc + (project.paid || 0),
               0
             );
             const totalBalance = totalBudget - totalPaid;

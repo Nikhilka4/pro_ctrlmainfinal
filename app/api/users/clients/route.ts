@@ -7,9 +7,11 @@ export async function GET() {
     await connectDB();
     const clients = await User.find({ role: "client" }).select("-password");
     return NextResponse.json(clients);
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      {
+        error: error instanceof Error ? error.message : "Internal server error",
+      },
       { status: 500 }
     );
   }

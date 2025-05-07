@@ -35,6 +35,11 @@ interface ProjectWithLatestDoc {
   };
 }
 
+interface Document {
+  filename: string;
+  uploadDate: string;
+}
+
 export function TableDemo() {
   const [projects, setProjects] = useState<ProjectWithLatestDoc[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,8 +70,8 @@ export function TableDemo() {
 
               const docs = await docsResponse.json();
               if (docs && docs.length > 0) {
-                const sortedDocs = docs.sort(
-                  (a: any, b: any) =>
+                const sortedDocs = (docs as Document[]).sort(
+                  (a, b) =>
                     new Date(b.uploadDate).getTime() -
                     new Date(a.uploadDate).getTime()
                 );
@@ -111,7 +116,7 @@ export function TableDemo() {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
       )
-    : projects.slice(0, 7);
+    : projects.slice(0, 7); // Show only first 7 projects on non-documentation pages
 
   if (loading) {
     return <div>Loading...</div>;
@@ -124,10 +129,14 @@ export function TableDemo() {
           <TableHeader>
             <TableRow>
               <TableHead>S.No</TableHead>
-              <TableHead className="w-[200px]">Project Title</TableHead>
-              <TableHead>Documentation Status</TableHead>
-              <TableHead>Last Updated Date</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="w-[200px] text-center">
+                Project Title
+              </TableHead>
+              <TableHead className="text-center">
+                Documentation Status
+              </TableHead>
+              {/* <TableHead>Last Updated Date</TableHead> */}
+              <TableHead className="text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -138,16 +147,20 @@ export function TableDemo() {
                     ? (currentPage - 1) * itemsPerPage + index + 1
                     : index + 1}
                 </TableCell>
-                <TableCell>{project.projectTitle}</TableCell>
-                <TableCell>{project.documentStatus}</TableCell>
-                <TableCell>
+                <TableCell className="text-center">
+                  {project.projectTitle}
+                </TableCell>
+                <TableCell className="text-center">
+                  {project.documentStatus}
+                </TableCell>
+                {/* <TableCell>
                   {project.latestDocument
                     ? new Date(
                         project.latestDocument.uploadDate
                       ).toLocaleDateString()
                     : "No documents"}
-                </TableCell>
-                <TableCell>
+                </TableCell> */}
+                <TableCell className="text-center">
                   <Link
                     href={`/documentation/${project.username}/${project.projectTitle}`}
                   >
