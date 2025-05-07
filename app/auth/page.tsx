@@ -124,7 +124,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex mx-5 min-h-screen items-center justify-center">
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}

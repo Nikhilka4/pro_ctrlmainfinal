@@ -252,7 +252,7 @@ export function AdminTable() {
               Add Project
             </Button>
           </SheetTrigger>
-          <SheetContent className="w-[600px] sm:w-[600px] overflow-y-auto max-h-screen">
+          <SheetContent className="w-full md:w-[600px] overflow-y-auto max-h-screen">
             <SheetHeader>
               <SheetTitle>
                 {selectedProject ? "Edit Project" : "Add New Project"}
