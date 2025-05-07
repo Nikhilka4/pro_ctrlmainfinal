@@ -65,14 +65,11 @@ export default function LoginPage() {
       if (result?.ok) {
         toast.success("Login successful!");
         try {
-          await router.refresh(); // Refresh the current route's data
-          await router.push("/"); // Navigate to homepage
-          // As a fallback, try a hard redirect if client-side navigation fails
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 500);
+          await router.refresh();
+          await router.push("/");
         } catch (navigationError) {
-          // If client-side navigation fails, force a hard redirect
+          console.error("Navigation error:", navigationError);
+          // Fallback to window.location if client-side navigation fails
           window.location.href = "/";
         }
       }
