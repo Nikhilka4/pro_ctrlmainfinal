@@ -64,8 +64,17 @@ export default function LoginPage() {
 
       if (result?.ok) {
         toast.success("Login successful!");
-        router.push("/");
-        router.refresh();
+        try {
+          await router.refresh(); // Refresh the current route's data
+          await router.push("/"); // Navigate to homepage
+          // As a fallback, try a hard redirect if client-side navigation fails
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 500);
+        } catch (navigationError) {
+          // If client-side navigation fails, force a hard redirect
+          window.location.href = "/";
+        }
       }
     } catch (error) {
       toast.error("An unexpected error occurred");
@@ -117,7 +126,9 @@ export default function LoginPage() {
       setPassword("");
       setCompanyName("");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "An unexpected error occurred");
+      toast.error(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
     } finally {
       setIsLoading(false);
     }
