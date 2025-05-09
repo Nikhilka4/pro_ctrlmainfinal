@@ -9,13 +9,12 @@ export async function POST(request: Request) {
 
     if (!username || !password || !companyName) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "All fields are required" },
         { status: 400 }
       );
     }
 
     const lowercaseUsername = username.toLowerCase();
-
     const existingUser = await User.findOne({ username: lowercaseUsername });
     if (existingUser) {
       return NextResponse.json(
@@ -28,13 +27,25 @@ export async function POST(request: Request) {
       username: lowercaseUsername,
       password,
       companyName,
+      role: "client",
+      securityQuestion: "", // Initialize with empty security fields
+      securityAnswer: "",
+      isVerified: false, // User needs to set security info to be verified
     });
 
     return NextResponse.json(
-      { message: "User registered successfully", user },
+      {
+        message: "User registered successfully",
+        user: {
+          username: user.username,
+          role: user.role,
+          companyName: user.companyName,
+        },
+      },
       { status: 201 }
     );
-  } catch (error: unknown) {
+  } catch (error) {
+    console.error("Registration error:", error);
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Internal server error",

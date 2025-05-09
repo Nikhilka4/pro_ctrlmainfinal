@@ -34,6 +34,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Company name is required"],
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    securityQuestion: {
+      type: String,
+    },
+    securityAnswer: {
+      type: String,
+    },
     projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -62,7 +72,7 @@ userSchema.pre("save", async function (next) {
 // Method to compare password
 userSchema.methods.comparePassword = async function (
   candidatePassword: string
-) {
+): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
 

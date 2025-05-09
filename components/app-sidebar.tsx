@@ -12,16 +12,31 @@ import {
   SidebarRail,
   SidebarFooter,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import { LogOutIcon } from "lucide-react";
+import { LogOutIcon, CircleUserRound } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
   const router = useRouter();
+  const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   const handleLogout = async () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
     await signOut({ redirect: false });
     router.push("/auth");
   };
+
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
+
+  const { data: session } = useSession();
 
   return (
     <Sidebar collapsible="icon">
@@ -33,6 +48,27 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarRail />
       <SidebarFooter className="border-t pt-2">
+        {session?.user?.role === "client" && (<Link href="/profile">
+          <SidebarMenuButton
+            asChild
+            tooltip="Profile"
+            className={
+              isActive("/profile")
+                ? "bg-slate-800 text-white hover:bg-slate-800 hover:text-white"
+                : ""
+            }
+            onClick={() => {
+              if (isMobile) {
+                setOpenMobile(false);
+              }
+            }}
+          >
+            <div>
+              <CircleUserRound className="h-4 w-4" />
+              <span className="ml-2">Profile</span>
+            </div>
+          </SidebarMenuButton>
+        </Link>)}
         <SidebarMenuButton
           asChild
           tooltip="Logout"

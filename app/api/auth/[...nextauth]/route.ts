@@ -38,6 +38,7 @@ const handler = NextAuth({
             username: user.username,
             role: user.role,
             companyName: user.companyName,
+            isVerified: user.isVerified,
           };
         } catch (error) {
           console.error("Auth error:", error);
@@ -58,6 +59,7 @@ const handler = NextAuth({
         token.username = user.username;
         token.role = user.role;
         token.companyName = user.companyName;
+        token.isVerified = user.isVerified;
       }
       return token;
     },
@@ -68,6 +70,7 @@ const handler = NextAuth({
           username: token.username as string,
           role: token.role as "admin" | "client",
           companyName: token.companyName as string,
+          isVerified: token.isVerified as boolean,
         };
       }
       return session;

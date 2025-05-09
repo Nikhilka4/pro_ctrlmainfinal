@@ -7,6 +7,7 @@ import {
   BookOpen,
   DollarSign,
   Wrench,
+  UserRoundPlus
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -23,6 +24,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -30,6 +32,13 @@ import { useSession } from "next-auth/react";
 export function NavMain() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleNavigation = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const isActive = (path: string) => {
     return pathname === path;
@@ -54,7 +63,7 @@ export function NavMain() {
                 : ""
             }
           >
-            <Link href={dashboardPath}>
+            <Link href={dashboardPath} onClick={handleNavigation}>
               <Home />
               <span>
                 {session?.user?.role === "client"
@@ -64,6 +73,24 @@ export function NavMain() {
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
+        { session?.user?.role === "admin" && (
+          <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            tooltip="Client Registration"
+            className={
+              isActive("/client-registration")
+                ? "bg-slate-800 text-white hover:bg-slate-800 hover:text-white"
+                : ""
+            }
+          >
+            <Link href="/client-registration" onClick={handleNavigation}>
+              <UserRoundPlus />
+              <span>Client Registration</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        )}
 
         {/* Client-specific navigation items */}
         {session?.user?.role === "client" && (
@@ -78,7 +105,7 @@ export function NavMain() {
                     : ""
                 }
               >
-                <Link href="/projects">
+                <Link href="/projects" onClick={handleNavigation}>
                   <Layers />
                   <span>Projects</span>
                 </Link>
@@ -95,7 +122,7 @@ export function NavMain() {
                     : ""
                 }
               >
-                <Link href="/documentation">
+                <Link href="/documentation" onClick={handleNavigation}>
                   <BookOpen />
                   <span>Documentation</span>
                 </Link>
@@ -112,7 +139,7 @@ export function NavMain() {
                     : ""
                 }
               >
-                <Link href="/finance">
+                <Link href="/finance" onClick={handleNavigation}>
                   <DollarSign />
                   <span>Finance</span>
                 </Link>
@@ -149,7 +176,10 @@ export function NavMain() {
                         : ""
                     }
                   >
-                    <Link href="/tools/quote-estimator">
+                    <Link
+                      href="/tools/quote-estimator"
+                      onClick={handleNavigation}
+                    >
                       <span>Instant Quote Estimator</span>
                     </Link>
                   </SidebarMenuSubButton>
@@ -163,7 +193,10 @@ export function NavMain() {
                         : ""
                     }
                   >
-                    <Link href="/tools/gst-calculator">
+                    <Link
+                      href="/tools/gst-calculator"
+                      onClick={handleNavigation}
+                    >
                       <span>GST Calculator</span>
                     </Link>
                   </SidebarMenuSubButton>
@@ -177,7 +210,10 @@ export function NavMain() {
                         : ""
                     }
                   >
-                    <Link href="/tools/price-comparison">
+                    <Link
+                      href="/tools/price-comparison"
+                      onClick={handleNavigation}
+                    >
                       <span>Price Comparison</span>
                     </Link>
                   </SidebarMenuSubButton>

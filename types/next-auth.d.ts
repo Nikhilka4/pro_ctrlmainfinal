@@ -6,6 +6,7 @@ declare module "next-auth" {
       username: string;
       role: "admin" | "client";
       companyName: string;
+      isVerified?: boolean;
     } & DefaultSession["user"];
   }
 
@@ -13,6 +14,7 @@ declare module "next-auth" {
     username: string;
     role: "admin" | "client";
     companyName: string;
+    isVerified?: boolean;
   }
 }
 
@@ -21,5 +23,6 @@ declare module "next-auth/jwt" {
     username: string;
     role: "admin" | "client";
     companyName: string;
+    isVerified?: boolean;
   }
 }
