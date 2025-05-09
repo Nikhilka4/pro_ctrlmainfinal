@@ -121,7 +121,8 @@ export default function LoginPage() {
 
       setShowForgotPassword(false);
       setShowResetPassword(true);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Security verification error:", error);
       toast.error("An error occurred while verifying security answer");
     }
   };
@@ -163,7 +164,8 @@ export default function LoginPage() {
       setSecurityAnswer("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Password reset error:", error);
       toast.error("An error occurred while updating password");
     }
   };

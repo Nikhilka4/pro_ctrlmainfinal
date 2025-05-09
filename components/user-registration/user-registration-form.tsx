@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 // import SecurityVerificationForm from "./SecurityVerificationForm";
@@ -17,7 +17,7 @@ const UserRegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSecurityForm, setShowSecurityForm] = useState(false);
   const [registeredUsername, setRegisteredUsername] = useState("");
-  const router = useRouter();
+  // const router = useRouter();
 
   const validatePassword = (password: string) => {
     if (password.length < 8) {
@@ -78,6 +78,9 @@ const UserRegistrationForm = () => {
         "Registration successful! Please set up your security question."
       );
       setRegisteredUsername(username);
+      console.log(
+        registeredUsername
+      )
       setShowSecurityForm(true);
     } catch (error) {
       toast.error(
@@ -86,10 +89,6 @@ const UserRegistrationForm = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleVerificationComplete = () => {
-    router.push("/auth");
   };
 
   if (showSecurityForm) {
