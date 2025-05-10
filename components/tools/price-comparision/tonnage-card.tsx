@@ -56,7 +56,7 @@ export function TonnageCard({
       const subTotalPerSqFt = area * price;
       const gstPerSqFt = subTotalPerSqFt * 0.18;
       const totalPerSqFt = subTotalPerSqFt + gstPerSqFt;
-      const subTotalPerTon = (area * 10.764 * load)/1000 * pricePerTon;
+      const subTotalPerTon = ((area / 10.764) * load)/1000 * pricePerTon;
       const gstPerTon = subTotalPerTon * 0.18;
       const totalPerTon = subTotalPerTon + gstPerTon; 
       

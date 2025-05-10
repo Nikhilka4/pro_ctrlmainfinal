@@ -21,6 +21,8 @@ export function TonnageResultCard({
   height = "min-h-[600px]",
   result,
 }: TonnageResultCardProps) {
+
+  
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat("en-IN", {
       maximumFractionDigits: 2,
@@ -28,7 +30,7 @@ export function TonnageResultCard({
   };
 
   return (
-    <div className="h-full w-full flex flex-col md:flex-row items-center justify-center md:space-x-4 space-y-4">
+    <div className="h-full w-full flex flex-col md:flex-row items-center justify-center space-x-0 md:space-x-4 space-y-4 md:space-y-0">
       {/* First Card - Square Feet Based */}
       <Card className={` ${height} ${width} shadow-2xl`}>
         <CardHeader>
@@ -92,32 +94,45 @@ export function TonnageResultCard({
       </Card>
 
       {/* Second Card - Tonnage Based */}
-      <Card className={`${width} shadow-2xl`}>
+      <Card className={`${height} ${width} shadow-2xl`}>
         <CardHeader>
           <CardTitle>Tonnage Calculation</CardTitle>
           <CardDescription>Cost based on weight</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <div className="space-y-2">
-              <Label>Total Load</Label>
-              <div className="rounded-lg border p-3 bg-slate-50">
-                <span className="text-lg font-medium">
-                  {result ? formatNumber(result.load) : "0"}
-                </span>
-                <span className="ml-1 text-sm text-muted-foreground">kg</span>
+            <div className="w-full flex space-x-2">
+              <div className="w-[50%] space-y-2">
+                <Label>Total Load</Label>
+                <div className="rounded-lg border p-3 bg-slate-50">
+                  <span className="text-lg font-medium">
+                    {result ? formatNumber(result.load) : "0"}
+                  </span>
+                  <span className="ml-1 text-sm text-muted-foreground">kg</span>
+                </div>
+              </div>
+              <div className="w-[50%] space-y-2">
+                <Label>Price per Ton</Label>
+                <div className="rounded-lg border p-3 bg-slate-50">
+                  <span className="text-lg font-medium">
+                    ₹{result ? formatNumber(result.pricePerTon) : "0"}
+                  </span>
+                  <span className="ml-1 text-sm text-muted-foreground">
+                    / ton
+                  </span>
+                </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Price per Ton</Label>
+              <Label>Total Tonnage</Label>
               <div className="rounded-lg border p-3 bg-slate-50">
                 <span className="text-lg font-medium">
-                  ₹{result ? formatNumber(result.pricePerTon) : "0"}
+                  {result ? formatNumber(result.subTotalPerTon / result.pricePerTon) : "0"}
                 </span>
                 <span className="ml-1 text-sm text-muted-foreground">
-                  / ton
-                </span>
+                    tons
+                  </span>
               </div>
             </div>
 
