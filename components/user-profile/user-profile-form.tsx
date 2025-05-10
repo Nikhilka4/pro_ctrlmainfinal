@@ -46,7 +46,7 @@ const securityQuestions = [
 const formSchema = z.object({
   username: z.string(),
   securityQuestion: z.string({
-    required_error: "Please select a security question.",
+    required_error: undefined,
   }),
   securityAnswer: z.string().min(1, {
     message: "Security answer is required.",
@@ -124,7 +124,7 @@ const UserProfileForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Security Question</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a security question" />

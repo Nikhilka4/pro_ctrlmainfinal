@@ -94,7 +94,8 @@ export default function LoginPage() {
     }
   };
 
-  const handleForgotPasswordSubmit = async () => {
+  const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!forgotPasswordUsername || !securityQuestion || !securityAnswer) {
       toast.error("Please fill in all fields");
       return;
@@ -177,7 +178,7 @@ export default function LoginPage() {
           <Input
             placeholder="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.trim().toLowerCase())}
           />
           <div className="relative">
             <Input
@@ -207,7 +208,13 @@ export default function LoginPage() {
             type="button"
             variant="link"
             className="w-full"
-            onClick={() => setShowForgotPassword(true)}
+            onClick={() => {
+              // Reset fields before showing the dialog
+              setForgotPasswordUsername("");
+              setSecurityQuestion("");
+              setSecurityAnswer("");
+              setShowForgotPassword(true);
+            }}
           >
             Forgot Password?
           </Button>
@@ -216,7 +223,15 @@ export default function LoginPage() {
 
       <AlertDialog
         open={showForgotPassword}
-        onOpenChange={setShowForgotPassword}
+        onOpenChange={(open) => {
+          if (!open) {
+            // Reset all form fields when dialog is closed
+            setForgotPasswordUsername("");
+            setSecurityQuestion("");
+            setSecurityAnswer("");
+          }
+          setShowForgotPassword(open);
+        }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -261,7 +276,17 @@ export default function LoginPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={showResetPassword} onOpenChange={setShowResetPassword}>
+      <AlertDialog
+        open={showResetPassword}
+        onOpenChange={(open) => {
+          if (!open) {
+            // Reset password fields when dialog is closed
+            setNewPassword("");
+            setConfirmPassword("");
+          }
+          setShowResetPassword(open);
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Reset Password</AlertDialogTitle>

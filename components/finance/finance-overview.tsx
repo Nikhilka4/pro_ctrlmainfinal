@@ -72,7 +72,7 @@ export function FinanceOverview() {
           <IndianRupee className="h-7 md:h-10 w-7 md:w-10" />
           <div className="flex flex-col items-center justify-center">
             <span className="text-2xl font-bold">
-              ₹{summary.totalBudget.toLocaleString()}
+              {summary.totalBudget.toLocaleString()}
             </span>
             <span className="text-sm">Total Budget</span>
           </div>
@@ -81,7 +81,7 @@ export function FinanceOverview() {
           <IndianRupee className="h-7 md:h-10 w-7 md:w-10" />
           <div className="flex flex-col items-center justify-center">
             <span className="text-2xl font-bold">
-              ₹{summary.totalPaid.toLocaleString()}
+              {summary.totalPaid.toLocaleString()}
             </span>
             <span className="text-sm">Amount Paid</span>
           </div>
@@ -90,7 +90,7 @@ export function FinanceOverview() {
           <IndianRupee className="h-7 md:h-10 w-7 md:w-10" />
           <div className="flex flex-col items-center justify-center">
             <span className="text-2xl font-bold">
-              ₹{summary.totalBalance.toLocaleString()}
+              {summary.totalBalance.toLocaleString()}
             </span>
             <span className="text-sm">Balance Amount</span>
           </div>

@@ -25,6 +25,7 @@ export function GSTEstimatorCard({
   const [gstRate, setGstRate] = React.useState<string>("9");
   const [customGst, setCustomGst] = React.useState<string>("");
   const [result, setResult] = React.useState<number | null>(null);
+  const [totalAmount, setTotalAmount] = React.useState<number | null>(null);
 
   const calculateGST = () => {
     const baseAmount = parseFloat(amount);
@@ -33,9 +34,10 @@ export function GSTEstimatorCard({
     if (!isNaN(baseAmount) && !isNaN(rate)) {
       const gstAmount = (baseAmount * rate) / 100;
       setResult(gstAmount);
+      setTotalAmount(baseAmount + gstAmount);
     }
   };
-
+  
   return (
     <Card className={`${width} ${height} shadow-2xl`}>
       <CardHeader>
@@ -110,7 +112,7 @@ export function GSTEstimatorCard({
               <div className="mt-4 p-4 bg-secondary rounded-md">
                 <p className="text-center">GST Amount: ₹{result.toFixed(2)}</p>
                 <p className="text-center">
-                  Total Amount: ₹{(parseFloat(amount) + result).toFixed(2)}
+                  Total Amount: ₹{totalAmount?.toFixed(2)}
                 </p>
               </div>
             )}
